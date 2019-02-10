@@ -2,24 +2,16 @@ require 'spec_helper'
 
 describe CanCan::ModelAdapters::ActiveRecordAdapter do
   let(:true_v) do
-    if CanCan::ModelAdapters::ActiveRecordAdapter.version_greater_or_equal?('6')
-      1
-    else
-      "'t'"
-    end
+    ActiveRecord::Base.connection.quoted_true
   end
   let(:false_v) do
-    if CanCan::ModelAdapters::ActiveRecordAdapter.version_greater_or_equal?('6')
-      0
-    else
-      "'f'"
-    end
+    ActiveRecord::Base.connection.quoted_false
   end
 
   let(:false_condition) { "#{true_v}=#{false_v}" }
 
   before :each do
-    ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: ':memory:')
+    connect_db
     ActiveRecord::Migration.verbose = false
     ActiveRecord::Schema.define do
       create_table(:categories) do |t|
